@@ -1,0 +1,33 @@
+version: '3'
+services:
+  app:
+    build: docker/php
+    container_name: skillup_app
+    volumes:
+      - ./:/var/www
+    depends_on:
+      - db
+  nginx:
+    image: nginx:1.17
+    container_name: skillup_nginx
+    ports:
+      - 2804:80
+    volumes:
+      - ./:/var/www
+      - ./docker/nginx/skillup.local.conf:/etc/nginx/conf.d/skillup.local.conf
+    depends_on:
+      - app
+  db:
+    image: mysql:8.0.23
+    ports:
+      - 3306:3306
+    restart: always
+    volumes:
+      - ./docker/mysql:/var/lib/mysql
+    container_name: skillup_mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: skillup_db
+      MYSQL_USER: skillup_user
+      MYSQL_PASSWORD: skillup_pwd
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
