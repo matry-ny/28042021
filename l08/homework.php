@@ -18,6 +18,20 @@ $data = [
     ]],
 ];
 
+$data = [];
+for ($i = 0; $i < 5000; $i++) {
+    $row = ['title' => "TITLE {$i}"];
+    if ($i % 20 === 0) {
+        $row['children'] = [
+            ['title' => "CHILD {$i}.1", 'link' => "/child-link_{$i}_1"],
+            ['title' => "CHILD {$i}.2", 'link' => "/child-link_{$i}_2"],
+        ];
+    } else {
+        $row['link'] = "/link_{$i}";
+    }
+    $data[] = $row;
+}
+
 $html = '<ul>';
 foreach ($data as $item) {
     if (array_key_exists('link', $item)) {
