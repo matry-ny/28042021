@@ -54,6 +54,7 @@ echo getMenuHtml($data);
 
 function power(int $number, int $power): int
 {
+    var_dump($number, $power);
     if ($power === 1) {
         return $number;
     }
@@ -62,9 +63,11 @@ function power(int $number, int $power): int
         return $number === 0 ? 0 : 1;
     }
 
-    return $number * power($number, $power - 1);
+    $r = $number * power($number, $power - 1);
+    var_dump("$number ^ $power = $r");
+    return $r;
 }
-$pow = power(3, 3);
+$pow = power(3, 5);
 var_dump($pow);
 
 $count = 0;
@@ -87,5 +90,7 @@ function fibonacci(int $n)
     return $storage[$n];
 }
 
-$f = fibonacci(200);
+$f = fibonacci(6);
 var_dump($f, $count);
+
+// 1 1 2 3 5 8 13 21
