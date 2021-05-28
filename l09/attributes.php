@@ -37,3 +37,12 @@ function sum(string $message, int ...$numbers)
 }
 
 sum('Tada!', 1, 3, 5, 6, 7, 12, 21);
+
+function oldSum(string $message)
+{
+//    var_dump(func_num_args(), func_get_args());
+    echo $message, array_sum(func_get_args()), '<br>';
+}
+
+oldSum('Tada!', 1, 3, 5, 6, 7, 12, 21);
+
