@@ -8,7 +8,7 @@ function getRout(): string
     $dir = realpath("{$storage}/{$rout}");
 
     if (!str_contains($dir, $storage)) {
-        $dir = $storage;
+        $dir = "{$storage}/";
     }
 
     return str_replace($storage, '', $dir);
