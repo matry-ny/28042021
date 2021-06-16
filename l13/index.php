@@ -53,9 +53,26 @@ $browserRout = $renderedFile ? dirname($rout) : $rout;
                 <ul class="mt-3">
                     <?php foreach (getFilesList() as $file): ?>
                         <li>
-                            <a href="index.php?rout=<?= $browserRout ?>/<?= $file ?>">
+                            <?php $browserFile = "{$browserRout}/{$file}"; ?>
+                            <a href="index.php?rout=<?= $browserFile ?>">
                                 <?= $file ?>
                             </a>
+                            <?php if (isFile($browserFile)): ?>
+                            <a href="actions/download.php?rout=<?= $browserFile ?>"
+                               class="text-decoration-none">
+                                <i class="bi bi-cloud-download-fill m-2 text-success"></i>
+                            </a>
+                            <?php endif; ?>
+                            <?php if ($file !== '..'): ?>
+                            <a href="actions/delete.php?rout=<?= $browserFile ?>"
+                               class="text-decoration-none">
+                                <i class="bi bi-trash text-danger"></i>
+                            </a>
+                            <i class="bi bi-pencil text-warning edit-button"
+                               style="cursor: pointer"
+                               data-rout="<?= $browserFile ?>"
+                               data-old-name="<?= $file ?>"></i>
+                            <?php endif; ?>
                         </li>
                     <?php endforeach; ?>
                 </ul>
@@ -65,6 +82,32 @@ $browserRout = $renderedFile ? dirname($rout) : $rout;
             </div>
         </div>
     </main>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="POST">
+                        <input type="hidden" name="old_name">
+
+                        <label for="new_name_input" class="d-none">New Element Name</label>
+                        <input type="text"
+                               name="new_name"
+                               id="new_name_input"
+                               placeholder="Enter new element name"
+                               class="form-control">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="renameButton">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
 <?php
 
 require __DIR__ . '/footer.php';

@@ -34,3 +34,27 @@ function reArrayFiles(array $files): array
 
     return $fileArray;
 }
+
+function isFile(string $rout): bool
+{
+    $file = dirname(__DIR__) . '/storage' . $rout;
+    return is_file($file);
+}
+
+function removeElement(string $rout): void
+{
+    if (is_file($rout)) {
+        unlink($rout);
+        return;
+    }
+
+    $items = scandir($rout);
+    $items = array_filter($items, static fn (string $item) => !in_array($item, ['.', '..']));
+
+    foreach ($items as $item) {
+        $path = "{$rout}/{$item}";
+        removeElement($path);
+    }
+
+    rmdir($rout);
+}
