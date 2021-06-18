@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/../security.php';
+
 require_once __DIR__ . '/../helpers/response.php';
 
 $dirName = $_POST['dir_name'] ?? null;
