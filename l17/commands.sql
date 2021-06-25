@@ -13,8 +13,8 @@ ALTER TABLE `users` RENAME COLUMN `berthday` TO `birthday`;
 
 DESCRIBE `users`;
 
-INSERT INTO `users` (`name`, `birthday`) VALUES ("Dmytro", "1989-05-04");
+INSERT INTO `users` (`name`, `birthday`) VALUES ('Dmytro', '1989-05-04');
 
-INSERT INTO `users` (`name`, `birthday`) VALUES ("Oleg", "1989-03-08"), ("Taras", "1707-01-12");
+INSERT INTO `users` (`name`, `birthday`) VALUES ('Oleg', '1989-03-08'), ('Taras', '1707-01-12');
 
 SELECT * FROM `users`;
