@@ -8,6 +8,8 @@ function config(string $key, mixed $default = null): mixed
         'viewsRout' => "{$dir}/views",
         'layoutsRout' => "{$dir}/views/layouts",
         'existedVariablePrefix' => 'skillup',
+        'defaultController' => 'index',
+        'defaultAction' => 'index',
         'loginUrl' => '/guest/login',
         'guestActions' => [
             '/guest/login',

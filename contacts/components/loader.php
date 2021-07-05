@@ -10,8 +10,11 @@ function load(string $url)
 
     $parts = getUrlParts($url);
 
-    require_once getControllerFile($parts);
-    getActionFunction($parts)();
+    $controllerName = array_shift($parts) ?: config('defaultController');
+    require_once getControllerFile($controllerName);
+
+    $actionName = array_shift($parts) ?: config('defaultAction');
+    getActionFunction($actionName)();
 }
 
 function getUrlParts(string $url): array
@@ -25,9 +28,8 @@ function clearUrl(string $url): string
     return preg_replace('/\\?.*/', '', $url);
 }
 
-function getControllerFile(array &$parts): string
+function getControllerFile(string $controllerName): string
 {
-    $controllerName = array_shift($parts);
     $controllerName = camelize($controllerName);
     $controllerName = "{$controllerName}Controller.php";
     $controllerFile = config('controllersRout') . '/' . $controllerName;
@@ -38,9 +40,8 @@ function getControllerFile(array &$parts): string
     return $controllerFile;
 }
 
-function getActionFunction(array &$parts): string
+function getActionFunction(string $actionName): string
 {
-    $actionName = array_shift($parts);
     $actionName = camelize($actionName);
     $actionFunction = "action{$actionName}";
     if (!function_exists($actionFunction)) {
