@@ -1,2 +1,3 @@
 <h1>List of contacts</h1>
-<?= $name ?>
+
+<?php require __DIR__ . '/../friends_list.php' ?>

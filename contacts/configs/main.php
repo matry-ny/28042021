@@ -11,6 +11,7 @@ function config(string $key, mixed $default = null): mixed
         'defaultController' => 'index',
         'defaultAction' => 'index',
         'loginUrl' => '/guest/login',
+        'modelsDir' => "{$dir}/models",
         'guestActions' => [
             '/guest/login',
             '/guest/registration',
@@ -21,6 +22,7 @@ function config(string $key, mixed $default = null): mixed
             'password' => 'skillup_pwd',
             'db_name' => 'skillup_db',
         ],
+        'recordsOnPage' => 50
     ];
 
     return $config[$key] ?? $default;

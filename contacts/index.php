@@ -8,6 +8,7 @@ require_once __DIR__ . '/helpers/request.php';
 
 require_once __DIR__ . '/components/db.php';
 require_once __DIR__ . '/components/template.php';
+require_once __DIR__ . '/components/model.php';
 require_once __DIR__ . '/components/loader.php';
 require_once __DIR__ . '/components/security.php';
 

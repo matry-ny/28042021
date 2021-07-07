@@ -28,9 +28,16 @@ function findUserByLogin(string $login): ?array
     return mysqli_fetch_assoc($result);
 }
 
-function getAllUsers()
+function getAllUsersCount(): int
 {
+    $connect = getDbConnection();
+    $sql = 'SELECT COUNT(1) AS quantity FROM users';
+    $stmt = mysqli_prepare($connect, $sql);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    $data = mysqli_fetch_assoc($result);
 
+    return (int)$data['quantity'];
 }
 
 function generateRandomUsers(int $count)
