@@ -18,6 +18,7 @@ services:
       - ./:/var/www
       - ./docker/nginx/skillup.local.conf:/etc/nginx/conf.d/skillup.local.conf
       - ./docker/nginx/contacts.skillup.local.conf:/etc/nginx/conf.d/contacts.skillup.local.conf
+      - ./docker/nginx/chat.skillup.local.conf:/etc/nginx/conf.d/chat.skillup.local.conf
     depends_on:
       - app
   db:
