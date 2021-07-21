@@ -1,6 +1,8 @@
 <?php
 
-namespace components\dispatchers;
+namespace cli\components;
+
+use components\AbstractDispatcher;
 
 class CliDispatcher extends AbstractDispatcher
 {

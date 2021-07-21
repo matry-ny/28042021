@@ -1,6 +1,8 @@
 <?php
 
-namespace components\dispatchers;
+namespace web\components;
+
+use components\AbstractDispatcher;
 
 class WebDispatcher extends AbstractDispatcher
 {

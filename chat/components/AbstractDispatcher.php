@@ -1,6 +1,6 @@
 <?php
 
-namespace components\dispatchers;
+namespace components;
 
 abstract class AbstractDispatcher
 {
