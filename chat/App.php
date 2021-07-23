@@ -1,6 +1,7 @@
 <?php
 
 use components\Config;
+use components\DB;
 use components\Router;
 use components\AbstractDispatcher;
 use cli\components\CliDispatcher;
@@ -14,6 +15,7 @@ final class App
     public const ROUTER = 'router';
     public const TEMPLATE = 'template';
     public const SESSION = 'session';
+    public const DB = 'db';
 
     private array $storage = [];
 
@@ -38,6 +40,7 @@ final class App
         self::$instance
             ->setSession()
             ->setTemplate()
+            ->setDB()
             ->setRouter();
 
         return self::$instance;
@@ -67,9 +70,27 @@ final class App
         return $this->storage[self::SESSION] ?? null;
     }
 
+    public function db(): DB
+    {
+        return $this->storage[self::DB];
+    }
+
     private function setConfig(array $config): self
     {
         $this->storage[self::CONFIG] = new Config($config);
+        return $this;
+    }
+
+    private function setDB(): self
+    {
+        $config = $this->config()->get('db');
+        $this->storage[self::DB] = new DB(
+            $config['host'],
+            $config['user'],
+            $config['password'],
+            $config['db_name']
+        );
+
         return $this;
     }
 
