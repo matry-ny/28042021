@@ -10,4 +10,10 @@ return [
         'defaultLayout' => 'main',
         'existedVariablePrefix' => 'skillup'
     ],
+    'guestPages' => [
+        'guest/login',
+        'guest/registration',
+    ],
+    'loginPage' => '/guest/login',
+    'mainPage' => '/',
 ];

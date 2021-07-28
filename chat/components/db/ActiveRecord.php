@@ -8,18 +8,18 @@ use RuntimeException;
 
 abstract class ActiveRecord
 {
-    private array $securedFields = [
+    protected array $securedFields = [
         'created_at',
         'updated_at',
     ];
 
     private PDO $db;
 
-    private string $primaryKey;
+    protected string $primaryKey;
 
-    private array $attributes;
+    protected array $attributes;
 
-    private bool $isNewRecord = true;
+    protected bool $isNewRecord = true;
 
     public function __construct()
     {
@@ -31,11 +31,12 @@ abstract class ActiveRecord
 
     abstract protected function tableName(): string;
 
-    public static function findOne(int $id): static
+    public static function findOne(int|string $id, ?string $column = null): static
     {
         $entity = new static();
 
-        $sql = "SELECT * FROM `{$entity->tableName()}` WHERE `{$entity->primaryKey}` = :id LIMIT 1";
+        $column = $column ?: $entity->primaryKey;
+        $sql = "SELECT * FROM `{$entity->tableName()}` WHERE `{$column}` = :id LIMIT 1";
         $stmt = App::get()->db()->getConnection()->prepare($sql);
         $stmt->execute([':id' => $id]);
 
@@ -156,10 +157,11 @@ abstract class ActiveRecord
 
     private function initAttributes(): void
     {
+        $dbName = App::get()->db()->getDbName();
         $sql = <<<SQL
             SELECT `COLUMN_NAME` 
             FROM `INFORMATION_SCHEMA`.`COLUMNS` 
-            WHERE `TABLE_NAME` = '{$this->tableName()}'
+            WHERE `TABLE_SCHEMA` = '{$dbName}' AND `TABLE_NAME` = '{$this->tableName()}'
             ORDER BY `ORDINAL_POSITION`
         SQL;
 
@@ -185,5 +187,20 @@ abstract class ActiveRecord
 
         $this->primaryKey = $data['Column_name'];
         $this->securedFields[] = $this->primaryKey;
+    }
+
+    public function __sleep(): array
+    {
+        return [
+            'securedFields',
+            'primaryKey',
+            'attributes',
+            'isNewRecord',
+        ];
+    }
+
+    public function __wakeup(): void
+    {
+        $this->db = App::get()->db()->getConnection();
     }
 }

@@ -3,11 +3,11 @@
 namespace web\controllers;
 
 use App;
-use components\AbstractController;
 use models\UserContactEntity;
 use models\UserEntity;
+use web\components\AbstractWebController;
 
-class UsersController extends AbstractController
+class UsersController extends AbstractWebController
 {
     public function actionList()
     {
@@ -25,10 +25,10 @@ class UsersController extends AbstractController
         var_dump($contact);exit;
 
         // UPDATE
-//        $user = UserEntity::findOne(11);
-//        $user->name = 'Yuri Redner';
-//        $user->birthday = '1974-03-08';
-//        var_dump($user->save(), $user);
+        $user = UserEntity::findOne(11);
+        $user->name = 'Yuri Redner';
+        $user->birthday = '1974-03-08';
+        var_dump($user->save(), $user);
 //
 //
 //        $user = UserEntity::findOne(4576);
@@ -46,5 +46,11 @@ exit;
 //        );exit;
         $t = App::get()->template()?->render('users/list');
         echo($t);
+    }
+
+    public function actionLogout(): void
+    {
+        App::get()->user()->logout();
+        $this->redirect($this->config()->get('loginPage'));
     }
 }

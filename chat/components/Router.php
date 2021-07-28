@@ -10,15 +10,23 @@ class Router
 {
     private AbstractDispatcher $dispatcher;
 
+    private string $currentPage;
+
     public function __construct(AbstractDispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
+        $this->currentPage = "{$this->dispatcher->getControllerPart()}/{$this->dispatcher->getActionPart()}";
     }
 
-    public function init()
+    public function init(): void
     {
         $controller = $this->getControllerObject();
         $this->callAction($controller);
+    }
+
+    public function getCurrentPage(): string
+    {
+        return $this->currentPage;
     }
 
     private function getControllerObject(): AbstractController

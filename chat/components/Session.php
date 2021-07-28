@@ -18,4 +18,11 @@ class Session
     {
         return $_SESSION[$key] ?? $default;
     }
+
+    public function reset(): void
+    {
+        $_SESSION = [];
+        session_destroy();
+        session_start();
+    }
 }

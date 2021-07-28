@@ -33,4 +33,9 @@ class DB
 
         return $this->connection;
     }
+
+    public function getDbName(): string
+    {
+        return $this->db;
+    }
 }

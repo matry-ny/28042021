@@ -7,6 +7,7 @@ use components\AbstractDispatcher;
 use cli\components\CliDispatcher;
 use components\Session;
 use components\Template;
+use web\components\User;
 use web\components\WebDispatcher;
 
 final class App
@@ -16,6 +17,7 @@ final class App
     public const TEMPLATE = 'template';
     public const SESSION = 'session';
     public const DB = 'db';
+    public const USER = 'user';
 
     private array $storage = [];
 
@@ -38,10 +40,13 @@ final class App
         self::$instance = new self($config);
 
         self::$instance
+            ->setDB()
             ->setSession()
             ->setTemplate()
-            ->setDB()
+            ->setUser()
             ->setRouter();
+
+        self::$instance->router()->init();
 
         return self::$instance;
     }
@@ -73,6 +78,16 @@ final class App
     public function db(): DB
     {
         return $this->storage[self::DB];
+    }
+
+    public function user(): User
+    {
+        return $this->storage[self::USER];
+    }
+
+    public function router(): Router
+    {
+        return $this->storage[self::ROUTER];
     }
 
     private function setConfig(array $config): self
@@ -120,13 +135,16 @@ final class App
         return $this;
     }
 
+    private function setUser(): self
+    {
+        $this->storage[self::USER] = new User();
+        return $this;
+    }
+
     private function setRouter(): self
     {
         $dispatcher = $this->getDispatcher();
-        $router = new Router($dispatcher);
-        $router->init();
-
-        $this->storage[self::ROUTER] = $router;
+        $this->storage[self::ROUTER] = new Router($dispatcher);
         return $this;
     }
 
