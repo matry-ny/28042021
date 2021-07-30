@@ -10,7 +10,7 @@ class ChatController extends AbstractController
 {
     public function actionRun(): void
     {
-        $app = new App('localhost', 8080);
+        $app = new App('ws.skillup.local', 3000, '0.0.0.0');
         $app->route('/chat', new WebSocket(), ['*']);
         $app->run();
     }

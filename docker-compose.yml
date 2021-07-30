@@ -14,7 +14,7 @@ services:
     container_name: skillup_nginx
     ports:
       - 2804:80
-      - 8080:8080
+      - 3000:3000
     volumes:
       - ./:/var/www
       - ./docker/nginx/skillup.local.conf:/etc/nginx/conf.d/skillup.local.conf

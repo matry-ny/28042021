@@ -134,7 +134,7 @@
 
 </div>
 <script>
-    var conn = new WebSocket('ws://chat.skillup.local:8080/chat');
+    var conn = new WebSocket('ws://ws.skillup.local:3000/chat');
     conn.onmessage = function(e) { console.log(e.data); };
     conn.onopen = function(e) { conn.send('Hello Me!'); };
 </script>
