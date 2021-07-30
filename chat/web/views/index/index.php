@@ -133,8 +133,3 @@
     <p class="text-center top_spac"> Design by <a target="_blank" href="https://www.linkedin.com/in/sunil-rajput-nattho-singh/">Sunil Rajput</a></p>
 
 </div>
-<script>
-    var conn = new WebSocket('ws://ws.skillup.local:3000/chat');
-    conn.onmessage = function(e) { console.log(e.data); };
-    conn.onopen = function(e) { conn.send('Hello Me!'); };
-</script>
