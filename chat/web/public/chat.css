@@ -14,13 +14,12 @@ img{ max-width:100%;}
 .top_spac{ margin: 20px 0 0;}
 
 
-.recent_heading {float: left; width:40%;}
 .srch_bar {
     display: inline-block;
     text-align: right;
     width: 60%;
 }
-.headind_srch{ padding:10px 29px 10px 20px; overflow:hidden; border-bottom:1px solid #c4c4c4;}
+.headind_srch{ padding:10px 20px; overflow:hidden; border-bottom:1px solid #c4c4c4;}
 
 .recent_heading h4 {
     color: #05728f;
@@ -55,6 +54,7 @@ img{ max-width:100%;}
     border-bottom: 1px solid #c4c4c4;
     margin: 0;
     padding: 18px 16px 10px;
+    cursor: pointer;
 }
 .inbox_chat { height: 550px; overflow-y: scroll;}
 

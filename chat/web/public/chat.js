@@ -4,14 +4,13 @@
     let layout;
     let webSocket;
     let options = {
-        authorId: null
+        authorId: null,
+        roomId: null
     };
 
     let methods = {
         initConnection: function () {
             webSocket = new WebSocket(WS_ADDRESS);
-            // conn.onmessage = function(e) { console.log(e.data); };
-            // conn.onopen = function(e) { conn.send('Hello Me!'); };
         },
         sendMessage: function (e) {
             e.stopPropagation();
@@ -29,8 +28,114 @@
 
             input.val('');
         },
-        renderMessage: function (e) {
-            console.log(e);
+        acceptMessage: function (e) {
+            let message = JSON.parse(e.data);
+            let isMyMessage = message['user_id'] === options.authorId;
+            let html = isMyMessage ? methods.renderOutgoingMessage(message) : methods.renderIncomingMessage(message);
+
+            methods.drawMessage(html);
+            methods.scrollMessages();
+        },
+        drawMessage: function (html) {
+            $('.msg_history').append(html);
+        },
+        scrollMessages: function () {
+            let messagesList = $('body').find('.msg_history');
+            messagesList.animate({scrollTop: messagesList.outerHeight()},"fast");
+        },
+        renderIncomingMessage(data) {
+            return $('<div/>')
+                .addClass('incoming_msg')
+                .append(
+                    $('<div/>')
+                        .addClass('incoming_msg_img')
+                        .append(
+                            $('<img/>')
+                                .attr({
+                                    src: 'https://ptetutorials.com/images/user-profile.png',
+                                    alt: 'sunil'
+                                })
+                        )
+                )
+                .append(
+                    $('<div/>')
+                        .addClass('received_msg')
+                        .append(
+                            $('<div/>')
+                                .addClass('received_withd_msg')
+                                .append(
+                                    $('<p/>').text(data['text'])
+                                )
+                                .append(
+                                    $('<span/>')
+                                        .addClass('time_date')
+                                        .text(methods.formatDate(data['created_at']))
+                                )
+
+                        )
+                );
+        },
+        renderOutgoingMessage(data) {
+            return $('<div/>')
+                .addClass('outgoing_msg')
+                .append(
+                    $('<div/>')
+                        .addClass('sent_msg')
+                        .append(
+                            $('<p/>').text(data['text'])
+                        )
+                        .append(
+                            $('<span/>')
+                                .addClass('time_date')
+                                .text(methods.formatDate(data['created_at']))
+                        )
+                );
+        },
+        formatDate: function (timestamp) {
+            let date = new Date(timestamp * 1000);
+            const monthNames = [
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June',
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'December'
+            ];
+
+            return date.getHours() + ':' + date.getMinutes() + ' | ' + monthNames[date.getMonth()]  + '  ' + date.getDay();
+        },
+        selectRoom: function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            let room = $(this);
+            options.roomId = room.data('roomId');
+
+            room.siblings('.chat_list').removeClass('active_chat');
+            room.addClass('active_chat');
+            $('.msg_history').html('');
+
+            $.ajax({
+                url: '/rooms/get-messages?room_id=' + options.roomId,
+                method: 'get',
+                contentType: 'json',
+                success: function (data) {
+                    let messages = JSON.parse(data);
+                    $.each(messages, function (i, message) {
+                        let html = parseInt(message['user_id']) === options.authorId
+                            ? methods.renderOutgoingMessage(message)
+                            : methods.renderIncomingMessage(message);
+                        methods.drawMessage(html);
+                    });
+                    methods.scrollMessages();
+                }
+            });
         }
     };
 
@@ -41,9 +146,18 @@
 
         methods.initConnection();
 
-        $(this).find('.input_msg_write').on('click', '.msg_send_btn', methods.sendMessage);
+        $(this).find('.input_msg_write')
+            .on('click', '.msg_send_btn', methods.sendMessage)
+            .on('keydown', function (e) {
+                if ((e.ctrlKey || e.metaKey) && (e.keyCode === 13 || e.keyCode === 10)) {
+                    methods.sendMessage(e);
+                }
+            });
 
-        webSocket.onmessage = methods.renderMessage;
+        $(this).find('.chat_list').on('click', methods.selectRoom);
+        $(this).find('.chat_list:first').click();
+
+        webSocket.onmessage = methods.acceptMessage;
 
         return this;
     };

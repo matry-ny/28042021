@@ -49,11 +49,13 @@ abstract class ActiveRecord
     /**
      * @return static[]
      */
-    public static function findAll(): array
+    public static function findAll(?string $orderBy = null, int $order = SORT_ASC): array
     {
         $entity = new static();
 
-        $sql = "SELECT * FROM `{$entity->tableName()}`";
+        $orderBy = $orderBy ?: $entity->primaryKey;
+        $orderDirection = $order === SORT_ASC ? 'ASC' : 'DESC';
+        $sql = "SELECT * FROM `{$entity->tableName()}` ORDER BY `{$orderBy}` {$orderDirection}";
         $stmt = App::get()->db()->getConnection()->query($sql);
         $data = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -87,6 +89,7 @@ abstract class ActiveRecord
     {
         $attributes = $this->attributes;
         unset($attributes[$this->primaryKey]);
+        $attributes = array_filter($attributes);
 
         $keys = array_keys($attributes);
         $fields = implode('`, `', $keys);
@@ -202,5 +205,10 @@ abstract class ActiveRecord
     public function __wakeup(): void
     {
         $this->db = App::get()->db()->getConnection();
+    }
+
+    public function toArray(): array
+    {
+        return $this->attributes;
     }
 }

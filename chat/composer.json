@@ -1,5 +1,7 @@
 {
     "require": {
+        "ext-pdo": "*",
+        "ext-json": "*",
         "cboden/ratchet": "^0.4.3"
     },
     "autoload": {
