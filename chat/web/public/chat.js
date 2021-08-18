@@ -1,5 +1,7 @@
 (function( $ ) {
     const WS_ADDRESS = 'ws://ws.skillup.local:3000/chat';
+    const TYPE_SUBSCRIBE = 'subscribe';
+    const TYPE_MESSAGE = 'message';
 
     let layout;
     let webSocket;
@@ -7,10 +9,24 @@
         authorId: null,
         roomId: null
     };
+    let messagesHeight = 0;
 
     let methods = {
         initConnection: function () {
             webSocket = new WebSocket(WS_ADDRESS);
+        },
+        subscribe: function () {
+            let subscribe = JSON.stringify({
+                type: TYPE_SUBSCRIBE,
+                data: options
+            });
+
+            let intervalId = setInterval(() => {
+                if (webSocket.readyState === 1) {
+                    webSocket.send(subscribe);
+                    clearInterval(intervalId);
+                }
+            }, 10);
         },
         sendMessage: function (e) {
             e.stopPropagation();
@@ -19,9 +35,12 @@
             let input = $(this).siblings('input');
 
             let message = JSON.stringify({
-                text: input.val(),
-                time: Math.floor(new Date().getTime() / 1000),
-                options: options
+                type: TYPE_MESSAGE,
+                data: {
+                    text: input.val(),
+                    time: Math.floor(new Date().getTime() / 1000),
+                    options: options
+                }
             });
 
             webSocket.send(message);
@@ -38,10 +57,11 @@
         },
         drawMessage: function (html) {
             $('.msg_history').append(html);
+            messagesHeight += html.outerHeight(true);
         },
         scrollMessages: function () {
             let messagesList = $('body').find('.msg_history');
-            messagesList.animate({scrollTop: messagesList.outerHeight()},"fast");
+            messagesList.animate({scrollTop: messagesHeight},"fast");
         },
         renderIncomingMessage(data) {
             return $('<div/>')
@@ -108,7 +128,7 @@
                 'December'
             ];
 
-            return date.getHours() + ':' + date.getMinutes() + ' | ' + monthNames[date.getMonth()]  + '  ' + date.getDay();
+            return date.getHours() + ':' + date.getMinutes() + ' | ' + monthNames[date.getMonth()]  + '  ' + date.getDate();
         },
         selectRoom: function (e) {
             e.stopPropagation();
@@ -116,6 +136,8 @@
 
             let room = $(this);
             options.roomId = room.data('roomId');
+
+            methods.subscribe();
 
             room.siblings('.chat_list').removeClass('active_chat');
             room.addClass('active_chat');
@@ -126,6 +148,7 @@
                 method: 'get',
                 contentType: 'json',
                 success: function (data) {
+                    messagesHeight = 0;
                     let messages = JSON.parse(data);
                     $.each(messages, function (i, message) {
                         let html = parseInt(message['user_id']) === options.authorId

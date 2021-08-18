@@ -10,6 +10,12 @@ use SplObjectStorage;
 
 class WebSocket implements MessageComponentInterface
 {
+    private const TYPE_SUBSCRIBE = 'subscribe';
+    private const TYPE_MESSAGE = 'message';
+
+    private array $usersToRooms = [];
+    private array $roomsToUsers = [];
+
     protected SplObjectStorage $clients;
 
     public function __construct()
@@ -24,7 +30,31 @@ class WebSocket implements MessageComponentInterface
 
     public function onMessage(ConnectionInterface $from, $msg): void
     {
-        $data = json_decode($msg, true);
+        $payload = json_decode($msg, true);
+        match ($payload['type']) {
+            self::TYPE_SUBSCRIBE => $this->subscribe($from, $payload['data']),
+            self::TYPE_MESSAGE => $this->message($payload['data']),
+        };
+    }
+
+    private function subscribe(ConnectionInterface $connection, array $data): void
+    {
+        $prevRoom = $this->roomsToUsers[$data['authorId']] ?? null;
+
+        $this->roomsToUsers[$data['authorId']] = $data['roomId'];
+        $this->usersToRooms[$data['roomId']][$data['authorId']] = $connection;
+
+        if ($prevRoom
+            && $prevRoom !== $data['roomId']
+            && is_array($this->usersToRooms[$prevRoom])
+            && array_key_exists($data['authorId'], $this->usersToRooms[$prevRoom])
+        ) {
+            unset($this->usersToRooms[$prevRoom][$data['authorId']]);
+        }
+    }
+
+    private function message(array $data): void
+    {
         $message = new MessageEntity();
         $message->user_id = $data['options']['authorId'];
         $message->room_id = $data['options']['roomId'];
@@ -32,7 +62,7 @@ class WebSocket implements MessageComponentInterface
         $message->created_at = $data['time'];
         $message->save();
 
-        foreach ($this->clients as $client) {
+        foreach ($this->usersToRooms[$message->room_id] as $client) {
             $client->send(json_encode($message->toArray()));
         }
     }
