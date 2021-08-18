@@ -20,6 +20,7 @@ services:
       - ./docker/nginx/skillup.local.conf:/etc/nginx/conf.d/skillup.local.conf
       - ./docker/nginx/contacts.skillup.local.conf:/etc/nginx/conf.d/contacts.skillup.local.conf
       - ./docker/nginx/chat.skillup.local.conf:/etc/nginx/conf.d/chat.skillup.local.conf
+      - ./docker/nginx/lara.skillup.local.conf:/etc/nginx/conf.d/lara.skillup.local.conf
     depends_on:
       - app
   db:
