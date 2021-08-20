@@ -38,6 +38,21 @@ services:
       MYSQL_USER: skillup_user
       MYSQL_PASSWORD: skillup_pwd
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
+  lara-db:
+    platform: linux/x86_64
+    image: mysql:8.0.23
+    ports:
+      - 3307:3306
+    restart: always
+    volumes:
+      - ./docker/lara_mysql:/var/lib/mysql
+    container_name: lara_mysql
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: lara_db
+      MYSQL_USER: lara_user
+      MYSQL_PASSWORD: lara_pwd
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
   phpmyadmin:
     image: phpmyadmin
     ports:
