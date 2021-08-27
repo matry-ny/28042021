@@ -16,7 +16,7 @@ class GuestController extends Controller
 
     public function login(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'email' => 'required|email:rfc,dns|exists:users',
             'password' => function ($attribute, $value, $fail) use ($request) {
                 $this->user = User::where('email', $request->get('email'))->first();

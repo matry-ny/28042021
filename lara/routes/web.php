@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\IndexController;
+use App\Http\Controllers\ProductsController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['middleware' => 'guest'], static function () {
+Route::middleware('guest')->group(static function () {
     Route::get('register', fn () => view('guest.register'));
     Route::get('login', [
         'as' => 'login',
@@ -24,8 +28,11 @@ Route::group(['middleware' => 'guest'], static function () {
     Route::post('login', ['as' => 'login', 'uses' => 'App\Http\Controllers\GuestController@login']);
 });
 
-Route::group(['middleware' => 'auth'], static function () {
-    Route::get('', 'App\Http\Controllers\IndexController@index');
-    Route::get('logout', 'App\Http\Controllers\UserController@logout');
-//    Route::post('import.excel', 'App\Http\Controllers\ExcelController@import')->name('import.excel');
+Route::middleware('auth')->group(static function () {
+    Route::get('', [IndexController::class, 'index']);
+    Route::get('logout', [UserController::class, 'logout']);
+    Route::post('/cart/add-product', [CartController::class, 'addProduct']);
+    Route::get('/products/{productId}/add-images', [ProductsController::class, 'addImages']);
+    Route::post('/products/{productId}/add-images', [ProductsController::class, 'uploadImages'])
+        ->name('products.upload-images');
 });
