@@ -134,6 +134,9 @@ return [
     |
     */
 
+    'fast_forex_url' => 'https://api.fastforex.io/fetch-multi',
+    'fast_forex_key' => env('FAST_FOREX_KEY'),
+
     'providers' => [
 
         /*

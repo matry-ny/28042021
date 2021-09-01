@@ -3,6 +3,10 @@
 @section('content')
     <div class="row">
         <div class="col col-9">
+            <div class="">Rates</div>
+            @foreach($rates['results'] as $currency => $rate)
+                {{ $currency }}: <span class="badge bg-info">${{ $rate }}</span>
+            @endforeach
             <div class="">Products</div>
             <table class="table table-striped">
                 <tr>
@@ -16,7 +20,12 @@
                 @foreach($products as $product)
                     <tr>
                         <td>{{ $product->id }}</td>
-                        <td>{{ $product->title }}</td>
+                        <td>
+                            {{ $product->title }}
+                            @foreach($product->images as $image)
+                                <img src="{{ $image->file_path }}" alt="{{ $product->title }}" width="100px">
+                            @endforeach
+                        </td>
                         <td>${{ $product->price }}</td>
                         <td>{{ $product->quantity }}</td>
                         <td>{{ $product->weight }} Kg</td>
